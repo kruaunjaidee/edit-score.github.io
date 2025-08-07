@@ -32,66 +32,66 @@
             <h1 class="text-4xl font-bold text-indigo-600">Score Dashboard</h1>
             <p class="text-lg text-gray-600">Manage student scores with real-time updates</p>
         </header>
-<!-- Charts and Latest Section -->
-            <div class="space-y-6">
-                <!-- Donut Chart -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h2 class="text-2xl font-semibold text-green-600 mb-4">Total Score Distribution</h2>
-                    <canvas id="donut-chart"></canvas>
-                </div>
 
-                <!-- Bar Chart -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h2 class="text-2xl font-semibold text-pink-600 mb-4">Grade Counts</h2>
-                    <canvas id="bar-chart"></canvas>
-                </div>
+        <!-- Charts and Latest in 3 columns, responsive -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Donut Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-green-600 mb-4">Total Score Distribution</h2>
+                <canvas id="donut-chart"></canvas>
+            </div>
 
-                <!-- Latest 5 Rows -->
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Latest 5 Scores</h2>
-                    <ul id="latest-list" class="space-y-2"></ul>
-                </div>
+            <!-- Bar Chart -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-pink-600 mb-4">Grade Counts</h2>
+                <canvas id="bar-chart"></canvas>
+            </div>
+
+            <!-- Latest 5 Rows -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Latest 5 Scores</h2>
+                <ul id="latest-list" class="space-y-2"></ul>
             </div>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Main Table Section -->
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
-                    <div class="space-x-2">
-                        <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Refresh</button>
-                        <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">New Score</button>
-                    </div>
-                </div>
-                <input id="search-input" type="text" placeholder="Search by name or student ID..." class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
-                <div class="overflow-x-auto">
-                    <table id="scores-table" class="w-full table-auto border-collapse">
-                        <thead>
-                            <tr class="bg-indigo-100 text-left">
-                                <th class="p-2">ID</th>
-                                <th class="p-2">User ID</th>
-                                <th class="p-2">Class ID</th>
-                                <th class="p-2">Number</th>
-                                <th class="p-2">Student ID</th>
-                                <th class="p-2">Prefix</th>
-                                <th class="p-2">First Name</th>
-                                <th class="p-2">Last Name</th>
-                                <th class="p-2">Unit 1</th>
-                                <th class="p-2">Unit 2</th>
-                                <th class="p-2">Unit 3</th>
-                                <th class="p-2">Middle</th>
-                                <th class="p-2">Unit 4</th>
-                                <th class="p-2">Unit 5</th>
-                                <th class="p-2">Final</th>
-                                <th class="p-2">Total</th>
-                                <th class="p-2">Grade</th>
-                                <th class="p-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+
+        <!-- Main Table Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
+                <div class="space-x-2">
+                    <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Refresh</button>
+                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">New Score</button>
                 </div>
             </div>
+            <input id="search-input" type="text" placeholder="Search by name or student ID..." class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
+            <div class="overflow-x-auto">
+                <table id="scores-table" class="w-full table-auto border-collapse">
+                    <thead>
+                        <tr class="bg-indigo-100 text-left">
+                            <th class="p-2">ID</th>
+                            <th class="p-2">User ID</th>
+                            <th class="p-2">Class ID</th>
+                            <th class="p-2">Number</th>
+                            <th class="p-2">Student ID</th>
+                            <th class="p-2">Prefix</th>
+                            <th class="p-2">First Name</th>
+                            <th class="p-2">Last Name</th>
+                            <th class="p-2">Unit 1</th>
+                            <th class="p-2">Unit 2</th>
+                            <th class="p-2">Unit 3</th>
+                            <th class="p-2">Middle</th>
+                            <th class="p-2">Unit 4</th>
+                            <th class="p-2">Unit 5</th>
+                            <th class="p-2">Final</th>
+                            <th class="p-2">Total</th>
+                            <th class="p-2">Grade</th>
+                            <th class="p-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
 
         <!-- Modal for Adding/Editing Score -->
         <div id="edit-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
@@ -363,7 +363,8 @@
         function renderLatest() {
             const list = document.querySelector('#latest-list');
             list.innerHTML = '';
-            const latest = [...scores].sort((a, b) => b.id - a.id).slice(0, 5);
+            // Assuming updated_at is added to the table and data, sort by updated_at desc
+            const latest = [...scores].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 5);
             latest.forEach(score => {
                 const li = document.createElement('li');
                 li.classList.add('bg-gray-100', 'p-2', 'rounded');
