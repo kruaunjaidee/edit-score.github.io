@@ -32,7 +32,6 @@
             <h1 class="text-4xl font-bold text-indigo-600">Score Dashboard</h1>
             <p class="text-lg text-gray-600">Manage student scores with real-time updates</p>
         </header>
-
         <!-- Charts and Latest in 3 columns, responsive -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Donut Chart -->
@@ -40,20 +39,17 @@
                 <h2 class="text-2xl font-semibold text-green-600 mb-4">Total Score Distribution</h2>
                 <canvas id="donut-chart"></canvas>
             </div>
-
             <!-- Bar Chart -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-semibold text-pink-600 mb-4">Grade Counts</h2>
                 <canvas id="bar-chart"></canvas>
             </div>
-
             <!-- Latest 5 Rows -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Latest 5 Scores</h2>
                 <ul id="latest-list" class="space-y-2"></ul>
             </div>
         </div>
-
         <!-- Main Table Section -->
         <div class="bg-white rounded-lg shadow-lg p-6">
             <div class="flex justify-between items-center mb-4">
@@ -79,7 +75,6 @@
                 </table>
             </div>
         </div>
-
         <!-- Modal for Adding/Editing Score -->
         <div id="edit-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -195,16 +190,12 @@
             </div>
         </div>
     </div>
-
     <script>
         // Replace with your Supabase Edge Function URL
         const API_URL = 'https://mihtvcbzguzkvfwnlnem.supabase.co/functions/v1/edit-score';
-
         let scores = []; // Local data store
         let donutChart, barChart;
-
         const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-
         // Bins for donut chart
         const totalBins = [
             { label: '<50', min: -Infinity, max: 50 },
@@ -220,16 +211,13 @@
             { label: '95-99', min: 95, max: 100 },
             { label: '>=100', min: 100, max: Infinity }
         ];
-
         const gradeLabels = ['4', '3.5', '3', '2.5', '2', '1.5', '1', '0'];
-
         // Vibrant colors for charts (Canva-inspired)
         const chartColors = [
             '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#6366F1',
             '#8B5CF6', '#EC4899', '#F43F5E', '#84CC16', '#22C55E',
             '#06B6D4', '#0EA5E9'
         ];
-
         async function fetchScores() {
             const response = await fetch(`${API_URL}?action=read`, { method: 'GET' });
             if (response.ok) {
@@ -241,11 +229,10 @@
                 console.error('Failed to fetch scores');
             }
         }
-
         function renderTable(filter = '') {
             const tbody = document.querySelector('#scores-table tbody');
             tbody.innerHTML = '';
-            const filteredScores = scores.filter(score => 
+            const filteredScores = scores.filter(score =>
                 (score.first_name + ' ' + score.last_name).toLowerCase().includes(filter.toLowerCase()) ||
                 score.student_id?.toLowerCase().includes(filter.toLowerCase())
             );
@@ -271,7 +258,6 @@
                 tbody.appendChild(tr);
             });
         }
-
         function openEditModal(score) {
             const modal = document.querySelector('#edit-modal');
             const form = document.querySelector('#edit-form');
@@ -293,7 +279,6 @@
             form.querySelector('[name="final_score"]').value = score.final_score || '';
             modal.classList.remove('hidden');
         }
-
         async function saveEdit(form) {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
@@ -317,10 +302,9 @@
                 fetchScores(); // Refetch to update computed fields and latest 5
                 document.querySelector('#edit-modal').classList.add('hidden');
             } else {
-                console.error('Failed to update');
+                console.error('Failed to update', await response.text());
             }
         }
-
         async function deleteScore(id) {
             if (confirm('Are you sure?')) {
                 const response = await fetch(`${API_URL}?action=delete`, {
@@ -335,24 +319,27 @@
                 }
             }
         }
-
         function renderLatest() {
             const list = document.querySelector('#latest-list');
             list.innerHTML = '';
             const latest = [...scores].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 5);
             latest.forEach(score => {
-                const date = new Date(score.updated_at);
-                const day = date.getDate();
-                const month = thaiMonths[date.getMonth()];
-                const year = (date.getFullYear() + 543) % 100; // Buddhist year, last 2 digits
-                const thaiDate = `${day} ${month} ${year.toString().padStart(2, '0')}`;
+                let thaiDate = '';
+                if (score.updated_at) {
+                    const date = new Date(score.updated_at);
+                    if (!isNaN(date.getTime())) {
+                        const day = date.getDate();
+                        const month = thaiMonths[date.getMonth()];
+                        const year = (date.getFullYear() + 543) % 100;
+                        thaiDate = `${day} ${month} ${year.toString().padStart(2, '0')}`;
+                    }
+                }
                 const li = document.createElement('li');
                 li.classList.add('bg-gray-100', 'p-2', 'rounded');
                 li.textContent = `${score.first_name} ${score.last_name} (${thaiDate}) - Total: ${score.total} (Grade: ${score.grade})`;
                 list.appendChild(li);
             });
         }
-
         function updateCharts() {
             // Donut Chart Data
             const binCounts = totalBins.map(() => 0);
@@ -374,7 +361,6 @@
                 },
                 options: { responsive: true }
             });
-
             // Bar Chart Data
             const gradeCounts = gradeLabels.map(() => 0);
             scores.forEach(score => {
@@ -391,13 +377,10 @@
                 options: { responsive: true, scales: { y: { beginAtZero: true } } }
             });
         }
-
         // Search Functionality (local filter, no refresh)
         document.querySelector('#search-input').addEventListener('input', (e) => renderTable(e.target.value));
-
         // Refresh Button
         document.querySelector('#refresh').addEventListener('click', fetchScores);
-
         // Edit Modal
         const editModal = document.querySelector('#edit-modal');
         document.querySelector('#close-edit-modal').addEventListener('click', () => editModal.classList.add('hidden'));
@@ -405,7 +388,6 @@
             e.preventDefault();
             saveEdit(e.target);
         });
-
         // Add New Modal
         const addModal = document.querySelector('#add-modal');
         document.querySelector('#add-new').addEventListener('click', () => addModal.classList.remove('hidden'));
@@ -424,6 +406,11 @@
                 body: JSON.stringify(data)
             });
             if (response.ok) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
                 fetchScores(); // Refetch to update latest 5 after create
                 addModal.classList.add('hidden');
                 e.target.reset();
@@ -431,7 +418,6 @@
                 console.error('Failed to create');
             }
         });
-
         // Initial Fetch
         fetchScores();
     </script>
