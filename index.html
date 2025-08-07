@@ -30,18 +30,18 @@
     <div class="container mx-auto p-6">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-indigo-600">Score Dashboard</h1>
-            <p class="text-lg text-gray-600">Manage student scores with real-time updates</p>
+            <p class="text-lg text-gray-600">เว็บบริหารจัดการคะแนน</p>
         </header>
         <!-- Charts and Latest in 3 columns, responsive -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Donut Chart -->
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-semibold text-green-600 mb-4">Total Score Distribution</h2>
+                <h2 class="text-2xl font-semibold text-green-600 mb-4">แยกกลุ่มคะแนน</h2>
                 <canvas id="donut-chart"></canvas>
             </div>
             <!-- Bar Chart -->
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-semibold text-pink-600 mb-4">Grade Counts</h2>
+                <h2 class="text-2xl font-semibold text-pink-600 mb-4">สถิติเกรด</h2>
                 <canvas id="bar-chart"></canvas>
             </div>
             <!-- Latest 5 Rows -->
@@ -53,7 +53,7 @@
         <!-- Main Table Section -->
         <div class="bg-white rounded-lg shadow-lg p-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
+                <h2 class="text-2xl font-semibold text-pink-600">รายการทั้งหมด</h2>
                 <div class="space-x-2">
                     <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">เริ่มใหม่</button>
                     <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">เพิ่ม</button>
@@ -244,7 +244,7 @@
                     <td class="p-2">${score.first_name || ''}</td>
                     <td class="p-2">${score.last_name || ''}</td>
                     <td class="p-2">
-                        <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
+                        <button class="delete-btn text-red-500 hover:text-red-700">ลบแถว</button>
                     </td>
                 `;
                 tr.addEventListener('click', (e) => {
@@ -260,7 +260,7 @@
         function openEditModal(score) {
             const modal = document.querySelector('#edit-modal');
             const form = document.querySelector('#edit-form');
-            document.querySelector('#modal-title').textContent = 'Edit Score';
+            document.querySelector('#modal-title').textContent = 'แก้ไขคะแนน';
             form.querySelector('[name="id"]').value = score.id;
             form.querySelector('[name="user_id"]').value = score.user_id;
             form.querySelector('[name="class_id"]').value = score.class_id || '';
