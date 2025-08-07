@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <style>
         /* Custom vibrant colors inspired by Canva */
         :root {
@@ -46,7 +47,7 @@
             </div>
             <!-- Latest 5 Rows -->
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Latest 5 Scores</h2>
+                <h2 class="text-2xl font-semibold text-indigo-600 mb-4">แก้ไขล่าสุด</h2>
                 <ul id="latest-list" class="space-y-2"></ul>
             </div>
         </div>
@@ -244,7 +245,7 @@
                     <td class="p-2">${score.first_name || ''}</td>
                     <td class="p-2">${score.last_name || ''}</td>
                     <td class="p-2">
-                        <button class="delete-btn text-red-500 hover:text-red-700">ลบแถว</button>
+                        <button class="delete-btn text-red-500 hover:text-red-700"><i class="fa-solid fa-folder-minus" style="color: #f90606;"></i></button>
                     </td>
                 `;
                 tr.addEventListener('click', (e) => {
