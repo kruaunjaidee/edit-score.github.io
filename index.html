@@ -55,8 +55,8 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
                 <div class="space-x-2">
-                    <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Refresh</button>
-                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">New Score</button>
+                    <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">เริ่มใหม่</button>
+                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">เพิ่ม</button>
                 </div>
             </div>
             <input id="search-input" type="text" placeholder="Search by name or student ID..." class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
@@ -78,7 +78,7 @@
         <!-- Modal for Adding/Editing Score -->
         <div id="edit-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[80vh] overflow-y-auto">
-                <h2 id="modal-title" class="text-2xl font-semibold mb-4">Edit Score</h2>
+                <h2 id="modal-title" class="text-2xl font-semibold mb-4">แก้ไขคะแนน</h2>
                 <form id="edit-form">
                     <div class="space-y-4">
                         <div class="p-2 rounded" style="background-color: var(--pastel-even);">
@@ -126,8 +126,8 @@
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-edit-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
-                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+                        <button type="button" id="close-edit-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
                     </div>
                 </form>
             </div>
@@ -136,7 +136,7 @@
         <!-- Separate Modal for Adding New Score -->
         <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[80vh] overflow-y-auto">
-                <h2 class="text-2xl font-semibold mb-4">Add New Score</h2>
+                <h2 class="text-2xl font-semibold mb-4">เพิ่มข้อมูลใหม่</h2>
                 <form id="add-form">
                     <div class="space-y-4">
                         <div class="p-2 rounded" style="background-color: var(--pastel-even);">
@@ -183,8 +183,8 @@
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-add-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
-                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+                        <button type="button" id="close-add-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
                     </div>
                 </form>
             </div>
