@@ -132,7 +132,6 @@
                 </form>
             </div>
         </div>
-
         <!-- Separate Modal for Adding New Score -->
         <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
             <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -336,7 +335,7 @@
                 }
                 const li = document.createElement('li');
                 li.classList.add('bg-gray-100', 'p-2', 'rounded');
-                li.textContent = `${score.first_name} ${score.last_name} (${thaiDate}) - Total: ${score.total} (Grade: ${score.grade})`;
+                li.innerHTML = `${score.first_name} ${score.last_name} (${thaiDate}) <br> Total: ${score.total} (Grade: ${score.grade})`;
                 list.appendChild(li);
             });
         }
