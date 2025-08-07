@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom vibrant colors inspired by Canva */
+        :root {
+            --primary: #6366f1; /* Indigo */
+            --secondary: #ec4899; /* Pink */
+            --accent: #10b981; /* Green */
+            --background: #f3f4f6; /* Light gray */
+            --card: #ffffff;
+        }
+        body {
+            background-color: var(--background);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="container mx-auto p-6">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-600">Score Dashboard</h1>
+            <p class="text-lg text-gray-600">Manage student scores with real-time updates</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Table Section -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
+                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Add New Score</button>
+                </div>
+                <input id="search-input" type="text" placeholder="Search by name or student ID..." class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
+                <div class="overflow-x-auto">
+                    <table id="scores-table" class="w-full table-auto border-collapse">
+                        <thead>
+                            <tr class="bg-indigo-100 text-left">
+                                <th class="p-2">ID</th>
+                                <th class="p-2">User ID</th>
+                                <th class="p-2">Class ID</th>
+                                <th class="p-2">Number</th>
+                                <th class="p-2">Student ID</th>
+                                <th class="p-2">Prefix</th>
+                                <th class="p-2">First Name</th>
+                                <th class="p-2">Last Name</th>
+                                <th class="p-2">Unit 1</th>
+                                <th class="p-2">Unit 2</th>
+                                <th class="p-2">Unit 3</th>
+                                <th class="p-2">Middle</th>
+                                <th class="p-2">Unit 4</th>
+                                <th class="p-2">Unit 5</th>
+                                <th class="p-2">Final</th>
+                                <th class="p-2">Total</th>
+                                <th class="p-2">Grade</th>
+                                <th class="p-2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Charts and Latest Section -->
+            <div class="space-y-6">
+                <!-- Donut Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold text-green-600 mb-4">Total Score Distribution</h2>
+                    <canvas id="donut-chart"></canvas>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold text-pink-600 mb-4">Grade Counts</h2>
+                    <canvas id="bar-chart"></canvas>
+                </div>
+
+                <!-- Latest 5 Rows -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Latest 5 Scores</h2>
+                    <ul id="latest-list" class="space-y-2"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Adding New Score -->
+        <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
+                <h2 class="text-2xl font-semibold mb-4">Add New Score</h2>
+                <form id="add-form">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input name="user_id" placeholder="User ID" class="p-2 border rounded" required>
+                        <input name="class_id" placeholder="Class ID" class="p-2 border rounded">
+                        <input name="number" placeholder="Number" class="p-2 border rounded">
+                        <input name="student_id" placeholder="Student ID" class="p-2 border rounded">
+                        <input name="prefix_name" placeholder="Prefix Name" class="p-2 border rounded">
+                        <input name="first_name" placeholder="First Name" class="p-2 border rounded">
+                        <input name="last_name" placeholder="Last Name" class="p-2 border rounded">
+                        <input name="unit1" type="number" placeholder="Unit 1" class="p-2 border rounded">
+                        <input name="unit2" type="number" placeholder="Unit 2" class="p-2 border rounded">
+                        <input name="unit3" type="number" placeholder="Unit 3" class="p-2 border rounded">
+                        <input name="middle" type="number" placeholder="Middle" class="p-2 border rounded">
+                        <input name="unit4" type="number" placeholder="Unit 4" class="p-2 border rounded">
+                        <input name="unit5" type="number" placeholder="Unit 5" class="p-2 border rounded">
+                        <input name="final_score" type="number" placeholder="Final Score" class="p-2 border rounded">
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" id="close-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Replace with your Supabase Edge Function URL
+        const API_URL = 'https://mihtvcbzguzkvfwnlnem.supabase.co/functions/v1/edit-score';
+
+        let scores = []; // Local data store
+        let donutChart, barChart;
+
+        // Bins for donut chart
+        const totalBins = [
+            { label: '<50', min: -Infinity, max: 50 },
+            { label: '50-54', min: 50, max: 55 },
+            { label: '55-59', min: 55, max: 60 },
+            { label: '60-64', min: 60, max: 65 },
+            { label: '65-69', min: 65, max: 70 },
+            { label: '70-74', min: 70, max: 75 },
+            { label: '75-79', min: 75, max: 80 },
+            { label: '80-84', min: 80, max: 85 },
+            { label: '85-89', min: 85, max: 90 },
+            { label: '90-94', min: 90, max: 95 },
+            { label: '95-99', min: 95, max: 100 },
+            { label: '>=100', min: 100, max: Infinity }
+        ];
+
+        const gradeLabels = ['4', '3.5', '3', '2.5', '2', '1.5', '1', '0'];
+
+        // Vibrant colors for charts (Canva-inspired)
+        const chartColors = [
+            '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#6366F1',
+            '#8B5CF6', '#EC4899', '#F43F5E', '#84CC16', '#22C55E',
+            '#06B6D4', '#0EA5E9'
+        ];
+
+        async function fetchScores() {
+            const response = await fetch(`${API_URL}?action=read`, { method: 'GET' });
+            if (response.ok) {
+                scores = await response.json();
+                renderTable();
+                renderLatest();
+                updateCharts();
+            } else {
+                console.error('Failed to fetch scores');
+            }
+        }
+
+        function renderTable(filter = '') {
+            const tbody = document.querySelector('#scores-table tbody');
+            tbody.innerHTML = '';
+            const filteredScores = scores.filter(score => 
+                (score.first_name + ' ' + score.last_name).toLowerCase().includes(filter.toLowerCase()) ||
+                score.student_id?.toLowerCase().includes(filter.toLowerCase())
+            );
+            filteredScores.forEach(score => {
+                const tr = document.createElement('tr');
+                tr.classList.add('border-b', 'hover:bg-gray-100');
+                tr.innerHTML = `
+                    <td class="p-2">${score.id}</td>
+                    <td class="p-2">${score.user_id}</td>
+                    <td class="p-2 editable" data-field="class_id">${score.class_id || ''}</td>
+                    <td class="p-2 editable" data-field="number">${score.number || ''}</td>
+                    <td class="p-2 editable" data-field="student_id">${score.student_id || ''}</td>
+                    <td class="p-2 editable" data-field="prefix_name">${score.prefix_name || ''}</td>
+                    <td class="p-2 editable" data-field="first_name">${score.first_name || ''}</td>
+                    <td class="p-2 editable" data-field="last_name">${score.last_name || ''}</td>
+                    <td class="p-2 editable" data-field="unit1">${score.unit1 || ''}</td>
+                    <td class="p-2 editable" data-field="unit2">${score.unit2 || ''}</td>
+                    <td class="p-2 editable" data-field="unit3">${score.unit3 || ''}</td>
+                    <td class="p-2 editable" data-field="middle">${score.middle || ''}</td>
+                    <td class="p-2 editable" data-field="unit4">${score.unit4 || ''}</td>
+                    <td class="p-2 editable" data-field="unit5">${score.unit5 || ''}</td>
+                    <td class="p-2 editable" data-field="final_score">${score.final_score || ''}</td>
+                    <td class="p-2">${score.total || 0}</td>
+                    <td class="p-2">${score.grade || ''}</td>
+                    <td class="p-2">
+                        <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
+                    </td>
+                `;
+                tr.querySelectorAll('.editable').forEach(cell => {
+                    cell.addEventListener('click', makeEditable);
+                });
+                tr.querySelector('.delete-btn').addEventListener('click', () => deleteScore(score.id));
+                tbody.appendChild(tr);
+            });
+        }
+
+        function makeEditable(event) {
+            const td = event.target;
+            if (td.querySelector('input')) return;
+            const value = td.textContent;
+            const input = document.createElement('input');
+            input.value = value;
+            input.classList.add('w-full', 'p-1', 'border', 'rounded');
+            const field = td.dataset.field;
+            if (field.includes('unit') || field === 'middle' || field === 'final_score') input.type = 'number';
+            td.innerHTML = '';
+            td.appendChild(input);
+            input.focus();
+            input.addEventListener('blur', () => saveEdit(td, input, field));
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveEdit(td, input, field); });
+        }
+
+        async function saveEdit(td, input, field) {
+            const newValue = input.value;
+            td.textContent = newValue;
+            const tr = td.closest('tr');
+            const id = parseInt(tr.querySelector('td:first-child').textContent);
+            const updateData = { id, [field]: newValue === '' ? null : (isNaN(newValue) ? newValue : parseFloat(newValue)) };
+            const response = await fetch(`${API_URL}?action=update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData)
+            });
+            if (response.ok) {
+                fetchScores(); // Refetch to update computed fields
+            } else {
+                console.error('Failed to update');
+                td.textContent = ''; // Revert on error
+            }
+        }
+
+        async function deleteScore(id) {
+            if (confirm('Are you sure?')) {
+                const response = await fetch(`${API_URL}?action=delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                if (response.ok) {
+                    fetchScores();
+                } else {
+                    console.error('Failed to delete');
+                }
+            }
+        }
+
+        function renderLatest() {
+            const list = document.querySelector('#latest-list');
+            list.innerHTML = '';
+            const latest = [...scores].sort((a, b) => b.id - a.id).slice(0, 5);
+            latest.forEach(score => {
+                const li = document.createElement('li');
+                li.classList.add('bg-gray-100', 'p-2', 'rounded');
+                li.textContent = `${score.first_name} ${score.last_name} - Total: ${score.total} (Grade: ${score.grade})`;
+                list.appendChild(li);
+            });
+        }
+
+        function updateCharts() {
+            // Donut Chart Data
+            const binCounts = totalBins.map(() => 0);
+            scores.forEach(score => {
+                const total = score.total || 0;
+                for (let i = 0; i < totalBins.length; i++) {
+                    if (total >= totalBins[i].min && total < totalBins[i].max) {
+                        binCounts[i]++;
+                        break;
+                    }
+                }
+            });
+            if (donutChart) donutChart.destroy();
+            donutChart = new Chart(document.getElementById('donut-chart'), {
+                type: 'doughnut',
+                data: {
+                    labels: totalBins.map(b => b.label),
+                    datasets: [{ data: binCounts, backgroundColor: chartColors }]
+                },
+                options: { responsive: true }
+            });
+
+            // Bar Chart Data
+            const gradeCounts = gradeLabels.map(() => 0);
+            scores.forEach(score => {
+                const index = gradeLabels.indexOf(score.grade);
+                if (index !== -1) gradeCounts[index]++;
+            });
+            if (barChart) barChart.destroy();
+            barChart = new Chart(document.getElementById('bar-chart'), {
+                type: 'bar',
+                data: {
+                    labels: gradeLabels,
+                    datasets: [{ label: 'Count', data: gradeCounts, backgroundColor: chartColors.slice(0, 8) }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        // Search Functionality
+        document.querySelector('#search-input').addEventListener('input', (e) => renderTable(e.target.value));
+
+        // Add New Modal
+        const modal = document.querySelector('#add-modal');
+        document.querySelector('#add-new').addEventListener('click', () => modal.classList.remove('hidden'));
+        document.querySelector('#close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+        document.querySelector('#add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            Object.keys(data).forEach(key => {
+                if (data[key] === '') data[key] = null;
+                else if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+            });
+            const response = await fetch(`${API_URL}?action=create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (response.ok) {
+                fetchScores();
+                modal.classList.add('hidden');
+                e.target.reset();
+            } else {
+                console.error('Failed to create');
+            }
+        });
+
+        // Real-time: Use polling for simplicity (every 5s), since edge functions don't support subscriptions directly in this setup
+        setInterval(fetchScores, 5000);
+
+        // Initial Fetch
+        fetchScores();
+    </script>
+</body>
+</html>
