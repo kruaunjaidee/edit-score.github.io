@@ -68,23 +68,10 @@
                 <table id="scores-table" class="w-full table-auto border-collapse">
                     <thead>
                         <tr class="bg-indigo-100 text-left">
-                            <th class="p-2">ID</th>
-                            <th class="p-2">User ID</th>
                             <th class="p-2">Class ID</th>
                             <th class="p-2">Number</th>
-                            <th class="p-2">Student ID</th>
-                            <th class="p-2">Prefix</th>
                             <th class="p-2">First Name</th>
                             <th class="p-2">Last Name</th>
-                            <th class="p-2">Unit 1</th>
-                            <th class="p-2">Unit 2</th>
-                            <th class="p-2">Unit 3</th>
-                            <th class="p-2">Middle</th>
-                            <th class="p-2">Unit 4</th>
-                            <th class="p-2">Unit 5</th>
-                            <th class="p-2">Final</th>
-                            <th class="p-2">Total</th>
-                            <th class="p-2">Grade</th>
                             <th class="p-2">Actions</th>
                         </tr>
                     </thead>
@@ -216,6 +203,8 @@
         let scores = []; // Local data store
         let donutChart, barChart;
 
+        const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
         // Bins for donut chart
         const totalBins = [
             { label: '<50', min: -Infinity, max: 50 },
@@ -264,23 +253,10 @@
                 const tr = document.createElement('tr');
                 tr.classList.add('border-b', 'hover:bg-gray-100', 'cursor-pointer');
                 tr.innerHTML = `
-                    <td class="p-2">${score.id}</td>
-                    <td class="p-2">${score.user_id}</td>
                     <td class="p-2">${score.class_id || ''}</td>
                     <td class="p-2">${score.number || ''}</td>
-                    <td class="p-2">${score.student_id || ''}</td>
-                    <td class="p-2">${score.prefix_name || ''}</td>
                     <td class="p-2">${score.first_name || ''}</td>
                     <td class="p-2">${score.last_name || ''}</td>
-                    <td class="p-2">${score.unit1 || ''}</td>
-                    <td class="p-2">${score.unit2 || ''}</td>
-                    <td class="p-2">${score.unit3 || ''}</td>
-                    <td class="p-2">${score.middle || ''}</td>
-                    <td class="p-2">${score.unit4 || ''}</td>
-                    <td class="p-2">${score.unit5 || ''}</td>
-                    <td class="p-2">${score.final_score || ''}</td>
-                    <td class="p-2">${score.total || 0}</td>
-                    <td class="p-2">${score.grade || ''}</td>
                     <td class="p-2">
                         <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
                     </td>
@@ -363,12 +339,16 @@
         function renderLatest() {
             const list = document.querySelector('#latest-list');
             list.innerHTML = '';
-            // Assuming updated_at is added to the table and data, sort by updated_at desc
             const latest = [...scores].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 5);
             latest.forEach(score => {
+                const date = new Date(score.updated_at);
+                const day = date.getDate();
+                const month = thaiMonths[date.getMonth()];
+                const year = (date.getFullYear() + 543) % 100; // Buddhist year, last 2 digits
+                const thaiDate = `${day} ${month} ${year.toString().padStart(2, '0')}`;
                 const li = document.createElement('li');
                 li.classList.add('bg-gray-100', 'p-2', 'rounded');
-                li.textContent = `${score.first_name} ${score.last_name} - Total: ${score.total} (Grade: ${score.grade})`;
+                li.textContent = `${score.first_name} ${score.last_name} (${thaiDate}) - Total: ${score.total} (Grade: ${score.grade})`;
                 list.appendChild(li);
             });
         }
