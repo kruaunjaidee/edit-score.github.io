@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         /* Custom vibrant colors inspired by Canva */
         :root {
@@ -34,7 +36,10 @@
             <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
-                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Add New Score</button>
+                    <div class="space-x-2">
+                        <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Refresh</button>
+                        <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Add New Score</button>
+                    </div>
                 </div>
                 <input id="search-input" type="text" placeholder="Search by name or student ID..." class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
                 <div class="overflow-x-auto">
@@ -88,29 +93,59 @@
             </div>
         </div>
 
-        <!-- Modal for Adding New Score -->
-        <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-1/2">
-                <h2 class="text-2xl font-semibold mb-4">Add New Score</h2>
-                <form id="add-form">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input name="user_id" placeholder="User ID" class="p-2 border rounded" required>
-                        <input name="class_id" placeholder="Class ID" class="p-2 border rounded">
-                        <input name="number" placeholder="Number" class="p-2 border rounded">
-                        <input name="student_id" placeholder="Student ID" class="p-2 border rounded">
-                        <input name="prefix_name" placeholder="Prefix Name" class="p-2 border rounded">
-                        <input name="first_name" placeholder="First Name" class="p-2 border rounded">
-                        <input name="last_name" placeholder="Last Name" class="p-2 border rounded">
-                        <input name="unit1" type="number" placeholder="Unit 1" class="p-2 border rounded">
-                        <input name="unit2" type="number" placeholder="Unit 2" class="p-2 border rounded">
-                        <input name="unit3" type="number" placeholder="Unit 3" class="p-2 border rounded">
-                        <input name="middle" type="number" placeholder="Middle" class="p-2 border rounded">
-                        <input name="unit4" type="number" placeholder="Unit 4" class="p-2 border rounded">
-                        <input name="unit5" type="number" placeholder="Unit 5" class="p-2 border rounded">
-                        <input name="final_score" type="number" placeholder="Final Score" class="p-2 border rounded">
+        <!-- Modal for Adding/Editing Score -->
+        <div id="edit-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 max-h-[80vh] overflow-y-auto">
+                <h2 id="modal-title" class="text-2xl font-semibold mb-4">Edit Score</h2>
+                <form id="edit-form">
+                    <div class="space-y-4">
+                        <input name="id" type="hidden">
+                        <input name="user_id" placeholder="User ID" class="w-full p-2 border rounded" readonly>
+                        <input name="class_id" placeholder="Class ID" class="w-full p-2 border rounded">
+                        <input name="number" placeholder="Number" class="w-full p-2 border rounded">
+                        <input name="student_id" placeholder="Student ID" class="w-full p-2 border rounded">
+                        <input name="prefix_name" placeholder="Prefix Name" class="w-full p-2 border rounded">
+                        <input name="first_name" placeholder="First Name" class="w-full p-2 border rounded">
+                        <input name="last_name" placeholder="Last Name" class="w-full p-2 border rounded">
+                        <input name="unit1" type="number" placeholder="Unit 1" class="w-full p-2 border rounded">
+                        <input name="unit2" type="number" placeholder="Unit 2" class="w-full p-2 border rounded">
+                        <input name="unit3" type="number" placeholder="Unit 3" class="w-full p-2 border rounded">
+                        <input name="middle" type="number" placeholder="Middle" class="w-full p-2 border rounded">
+                        <input name="unit4" type="number" placeholder="Unit 4" class="w-full p-2 border rounded">
+                        <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
+                        <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                        <button type="button" id="close-edit-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Separate Modal for Adding New Score -->
+        <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 max-h-[80vh] overflow-y-auto">
+                <h2 class="text-2xl font-semibold mb-4">Add New Score</h2>
+                <form id="add-form">
+                    <div class="space-y-4">
+                        <input name="user_id" placeholder="User ID" class="w-full p-2 border rounded" required>
+                        <input name="class_id" placeholder="Class ID" class="w-full p-2 border rounded">
+                        <input name="number" placeholder="Number" class="w-full p-2 border rounded">
+                        <input name="student_id" placeholder="Student ID" class="w-full p-2 border rounded">
+                        <input name="prefix_name" placeholder="Prefix Name" class="w-full p-2 border rounded">
+                        <input name="first_name" placeholder="First Name" class="w-full p-2 border rounded">
+                        <input name="last_name" placeholder="Last Name" class="w-full p-2 border rounded">
+                        <input name="unit1" type="number" placeholder="Unit 1" class="w-full p-2 border rounded">
+                        <input name="unit2" type="number" placeholder="Unit 2" class="w-full p-2 border rounded">
+                        <input name="unit3" type="number" placeholder="Unit 3" class="w-full p-2 border rounded">
+                        <input name="middle" type="number" placeholder="Middle" class="w-full p-2 border rounded">
+                        <input name="unit4" type="number" placeholder="Unit 4" class="w-full p-2 border rounded">
+                        <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
+                        <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" id="close-add-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
                     </div>
                 </form>
@@ -171,69 +206,86 @@
             );
             filteredScores.forEach(score => {
                 const tr = document.createElement('tr');
-                tr.classList.add('border-b', 'hover:bg-gray-100');
+                tr.classList.add('border-b', 'hover:bg-gray-100', 'cursor-pointer');
                 tr.innerHTML = `
                     <td class="p-2">${score.id}</td>
                     <td class="p-2">${score.user_id}</td>
-                    <td class="p-2 editable" data-field="class_id">${score.class_id || ''}</td>
-                    <td class="p-2 editable" data-field="number">${score.number || ''}</td>
-                    <td class="p-2 editable" data-field="student_id">${score.student_id || ''}</td>
-                    <td class="p-2 editable" data-field="prefix_name">${score.prefix_name || ''}</td>
-                    <td class="p-2 editable" data-field="first_name">${score.first_name || ''}</td>
-                    <td class="p-2 editable" data-field="last_name">${score.last_name || ''}</td>
-                    <td class="p-2 editable" data-field="unit1">${score.unit1 || ''}</td>
-                    <td class="p-2 editable" data-field="unit2">${score.unit2 || ''}</td>
-                    <td class="p-2 editable" data-field="unit3">${score.unit3 || ''}</td>
-                    <td class="p-2 editable" data-field="middle">${score.middle || ''}</td>
-                    <td class="p-2 editable" data-field="unit4">${score.unit4 || ''}</td>
-                    <td class="p-2 editable" data-field="unit5">${score.unit5 || ''}</td>
-                    <td class="p-2 editable" data-field="final_score">${score.final_score || ''}</td>
+                    <td class="p-2">${score.class_id || ''}</td>
+                    <td class="p-2">${score.number || ''}</td>
+                    <td class="p-2">${score.student_id || ''}</td>
+                    <td class="p-2">${score.prefix_name || ''}</td>
+                    <td class="p-2">${score.first_name || ''}</td>
+                    <td class="p-2">${score.last_name || ''}</td>
+                    <td class="p-2">${score.unit1 || ''}</td>
+                    <td class="p-2">${score.unit2 || ''}</td>
+                    <td class="p-2">${score.unit3 || ''}</td>
+                    <td class="p-2">${score.middle || ''}</td>
+                    <td class="p-2">${score.unit4 || ''}</td>
+                    <td class="p-2">${score.unit5 || ''}</td>
+                    <td class="p-2">${score.final_score || ''}</td>
                     <td class="p-2">${score.total || 0}</td>
                     <td class="p-2">${score.grade || ''}</td>
                     <td class="p-2">
                         <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
                     </td>
                 `;
-                tr.querySelectorAll('.editable').forEach(cell => {
-                    cell.addEventListener('click', makeEditable);
+                tr.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-btn')) openEditModal(score);
                 });
-                tr.querySelector('.delete-btn').addEventListener('click', () => deleteScore(score.id));
+                tr.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteScore(score.id);
+                });
                 tbody.appendChild(tr);
             });
         }
 
-        function makeEditable(event) {
-            const td = event.target;
-            if (td.querySelector('input')) return;
-            const value = td.textContent;
-            const input = document.createElement('input');
-            input.value = value;
-            input.classList.add('w-full', 'p-1', 'border', 'rounded');
-            const field = td.dataset.field;
-            if (field.includes('unit') || field === 'middle' || field === 'final_score') input.type = 'number';
-            td.innerHTML = '';
-            td.appendChild(input);
-            input.focus();
-            input.addEventListener('blur', () => saveEdit(td, input, field));
-            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveEdit(td, input, field); });
+        function openEditModal(score) {
+            const modal = document.querySelector('#edit-modal');
+            const form = document.querySelector('#edit-form');
+            document.querySelector('#modal-title').textContent = 'Edit Score';
+            form.querySelector('[name="id"]').value = score.id;
+            form.querySelector('[name="user_id"]').value = score.user_id;
+            form.querySelector('[name="class_id"]').value = score.class_id || '';
+            form.querySelector('[name="number"]').value = score.number || '';
+            form.querySelector('[name="student_id"]').value = score.student_id || '';
+            form.querySelector('[name="prefix_name"]').value = score.prefix_name || '';
+            form.querySelector('[name="first_name"]').value = score.first_name || '';
+            form.querySelector('[name="last_name"]').value = score.last_name || '';
+            form.querySelector('[name="unit1"]').value = score.unit1 || '';
+            form.querySelector('[name="unit2"]').value = score.unit2 || '';
+            form.querySelector('[name="unit3"]').value = score.unit3 || '';
+            form.querySelector('[name="middle"]').value = score.middle || '';
+            form.querySelector('[name="unit4"]').value = score.unit4 || '';
+            form.querySelector('[name="unit5"]').value = score.unit5 || '';
+            form.querySelector('[name="final_score"]').value = score.final_score || '';
+            modal.classList.remove('hidden');
         }
 
-        async function saveEdit(td, input, field) {
-            const newValue = input.value;
-            td.textContent = newValue;
-            const tr = td.closest('tr');
-            const id = parseInt(tr.querySelector('td:first-child').textContent);
-            const updateData = { id, [field]: newValue === '' ? null : (isNaN(newValue) ? newValue : parseFloat(newValue)) };
+        async function saveEdit(form) {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            Object.keys(data).forEach(key => {
+                if (data[key] === '') data[key] = null;
+                else if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+            });
+            const id = data.id;
+            delete data.id; // Remove id from update data
             const response = await fetch(`${API_URL}?action=update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify({ id, ...data })
             });
             if (response.ok) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
                 fetchScores(); // Refetch to update computed fields
+                document.querySelector('#edit-modal').classList.add('hidden');
             } else {
                 console.error('Failed to update');
-                td.textContent = ''; // Revert on error
             }
         }
 
@@ -303,13 +355,24 @@
             });
         }
 
-        // Search Functionality
+        // Search Functionality (local filter, no refresh)
         document.querySelector('#search-input').addEventListener('input', (e) => renderTable(e.target.value));
 
+        // Refresh Button
+        document.querySelector('#refresh').addEventListener('click', fetchScores);
+
+        // Edit Modal
+        const editModal = document.querySelector('#edit-modal');
+        document.querySelector('#close-edit-modal').addEventListener('click', () => editModal.classList.add('hidden'));
+        document.querySelector('#edit-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveEdit(e.target);
+        });
+
         // Add New Modal
-        const modal = document.querySelector('#add-modal');
-        document.querySelector('#add-new').addEventListener('click', () => modal.classList.remove('hidden'));
-        document.querySelector('#close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+        const addModal = document.querySelector('#add-modal');
+        document.querySelector('#add-new').addEventListener('click', () => addModal.classList.remove('hidden'));
+        document.querySelector('#close-add-modal').addEventListener('click', () => addModal.classList.add('hidden'));
         document.querySelector('#add-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -325,15 +388,12 @@
             });
             if (response.ok) {
                 fetchScores();
-                modal.classList.add('hidden');
+                addModal.classList.add('hidden');
                 e.target.reset();
             } else {
                 console.error('Failed to create');
             }
         });
-
-        // Real-time: Use polling for simplicity (every 5s), since edge functions don't support subscriptions directly in this setup
-        setInterval(fetchScores, 5000);
 
         // Initial Fetch
         fetchScores();
