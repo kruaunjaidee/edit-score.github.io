@@ -18,6 +18,8 @@
             --accent: #10b981; /* Green */
             --background: #f3f4f6; /* Light gray */
             --card: #ffffff;
+            --pastel-even: #E0F7FA; /* Light cyan */
+            --pastel-odd: #F3E5F5; /* Light purple */
         }
         body {
             background-color: var(--background);
@@ -95,25 +97,53 @@
 
         <!-- Modal for Adding/Editing Score -->
         <div id="edit-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 max-h-[80vh] overflow-y-auto">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[80vh] overflow-y-auto">
                 <h2 id="modal-title" class="text-2xl font-semibold mb-4">Edit Score</h2>
                 <form id="edit-form">
                     <div class="space-y-4">
-                        <input name="id" type="hidden">
-                        <input name="user_id" placeholder="User ID" class="w-full p-2 border rounded" readonly>
-                        <input name="class_id" placeholder="Class ID" class="w-full p-2 border rounded">
-                        <input name="number" placeholder="Number" class="w-full p-2 border rounded">
-                        <input name="student_id" placeholder="Student ID" class="w-full p-2 border rounded">
-                        <input name="prefix_name" placeholder="Prefix Name" class="w-full p-2 border rounded">
-                        <input name="first_name" placeholder="First Name" class="w-full p-2 border rounded">
-                        <input name="last_name" placeholder="Last Name" class="w-full p-2 border rounded">
-                        <input name="unit1" type="number" placeholder="Unit 1" class="w-full p-2 border rounded">
-                        <input name="unit2" type="number" placeholder="Unit 2" class="w-full p-2 border rounded">
-                        <input name="unit3" type="number" placeholder="Unit 3" class="w-full p-2 border rounded">
-                        <input name="middle" type="number" placeholder="Middle" class="w-full p-2 border rounded">
-                        <input name="unit4" type="number" placeholder="Unit 4" class="w-full p-2 border rounded">
-                        <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
-                        <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="id" type="hidden">
+                            <input name="user_id" placeholder="User ID" class="w-full p-2 border rounded" readonly>
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="class_id" placeholder="Class ID" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="number" placeholder="Number" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="student_id" placeholder="Student ID" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="prefix_name" placeholder="Prefix Name" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="first_name" placeholder="First Name" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="last_name" placeholder="Last Name" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="unit1" type="number" placeholder="Unit 1" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="unit2" type="number" placeholder="Unit 2" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="unit3" type="number" placeholder="Unit 3" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="middle" type="number" placeholder="Middle" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="unit4" type="number" placeholder="Unit 4" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                        </div>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <button type="button" id="close-edit-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
@@ -125,24 +155,52 @@
 
         <!-- Separate Modal for Adding New Score -->
         <div id="add-modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 max-h-[80vh] overflow-y-auto">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-4xl max-h-[80vh] overflow-y-auto">
                 <h2 class="text-2xl font-semibold mb-4">Add New Score</h2>
                 <form id="add-form">
                     <div class="space-y-4">
-                        <input name="user_id" placeholder="User ID" class="w-full p-2 border rounded" required>
-                        <input name="class_id" placeholder="Class ID" class="w-full p-2 border rounded">
-                        <input name="number" placeholder="Number" class="w-full p-2 border rounded">
-                        <input name="student_id" placeholder="Student ID" class="w-full p-2 border rounded">
-                        <input name="prefix_name" placeholder="Prefix Name" class="w-full p-2 border rounded">
-                        <input name="first_name" placeholder="First Name" class="w-full p-2 border rounded">
-                        <input name="last_name" placeholder="Last Name" class="w-full p-2 border rounded">
-                        <input name="unit1" type="number" placeholder="Unit 1" class="w-full p-2 border rounded">
-                        <input name="unit2" type="number" placeholder="Unit 2" class="w-full p-2 border rounded">
-                        <input name="unit3" type="number" placeholder="Unit 3" class="w-full p-2 border rounded">
-                        <input name="middle" type="number" placeholder="Middle" class="w-full p-2 border rounded">
-                        <input name="unit4" type="number" placeholder="Unit 4" class="w-full p-2 border rounded">
-                        <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
-                        <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="user_id" placeholder="User ID" class="w-full p-2 border rounded" required>
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="class_id" placeholder="Class ID" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="number" placeholder="Number" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="student_id" placeholder="Student ID" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="prefix_name" placeholder="Prefix Name" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="first_name" placeholder="First Name" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="last_name" placeholder="Last Name" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="unit1" type="number" placeholder="Unit 1" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="unit2" type="number" placeholder="Unit 2" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="unit3" type="number" placeholder="Unit 3" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="middle" type="number" placeholder="Middle" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="unit4" type="number" placeholder="Unit 4" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-even);">
+                            <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
+                        </div>
+                        <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
+                            <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                        </div>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <button type="button" id="close-add-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
@@ -282,7 +340,7 @@
                     spread: 70,
                     origin: { y: 0.6 }
                 });
-                fetchScores(); // Refetch to update computed fields
+                fetchScores(); // Refetch to update computed fields and latest 5
                 document.querySelector('#edit-modal').classList.add('hidden');
             } else {
                 console.error('Failed to update');
@@ -387,7 +445,7 @@
                 body: JSON.stringify(data)
             });
             if (response.ok) {
-                fetchScores();
+                fetchScores(); // Refetch to update latest 5 after create
                 addModal.classList.add('hidden');
                 e.target.reset();
             } else {
