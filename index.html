@@ -12,25 +12,47 @@
     <!-- Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
-        /* Custom vibrant colors inspired by Canva */
         :root {
-            --primary: #6366f1;
-            /* Indigo */
-            --secondary: #ec4899;
-            /* Pink */
-            --accent: #10b981;
-            /* Green */
-            --background: #f3f4f6;
-            /* Light gray */
+            --primary: #6366f1; /* Indigo */
+            --secondary: #ec4899; /* Pink */
+            --accent: #10b981; /* Green */
+            --background: #f3f4f6; /* Light gray */
             --card: #ffffff;
-            --pastel-even: #E0F7FA;
-            /* Light cyan */
-            --pastel-odd: #F3E5F5;
-            /* Light purple */
+            --pastel-even: #E0F7FA; /* Light cyan */
+            --pastel-odd: #F3E5F5; /* Light purple */
         }
 
         body {
             background-color: var(--background);
+        }
+
+        #class-filter {
+            background-color: #ffffff !important; /* White background */
+            color: #1f2937 !important; /* Dark gray text for readability */
+            font-size: 1rem; /* Standard font size */
+            font-weight: 500; /* Medium font weight for clarity */
+            border: 1px solid #d1d5db !important; /* Light gray border */
+            border-radius: 0.5rem !important; /* Rounded corners */
+            padding: 0.5rem 1rem !important; /* Padding for better spacing */
+            width: 100%; /* Full width */
+            appearance: none; /* Remove default browser styling */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231f2937' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #class-filter:focus {
+            outline: none;
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        #class-filter option {
+            background-color: #ffffff;
+            color: #1f2937;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -43,17 +65,14 @@
         </header>
         <!-- Charts and Latest in 3 columns, responsive -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <!-- Donut Chart -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-semibold text-green-600 mb-4">Total Score Distribution</h2>
                 <canvas id="donut-chart"></canvas>
             </div>
-            <!-- Bar Chart -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-semibold text-pink-600 mb-4">Grade Counts</h2>
                 <canvas id="bar-chart"></canvas>
             </div>
-            <!-- Latest 5 Rows -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-semibold text-indigo-600 mb-4">Latest 5 Scores</h2>
                 <ul id="latest-list" class="space-y-2"></ul>
@@ -64,14 +83,23 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
                 <div class="space-x-2">
-                    <button id="refresh"
-                        class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">เริ่มใหม่</button>
-                    <button id="add-new"
-                        class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">เพิ่ม</button>
+                    <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">เริ่มใหม่</button>
+                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">เพิ่ม</button>
                 </div>
             </div>
-            <input id="search-input" type="text" placeholder="Search by class, name, or student ID..."
-                class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
+            <div class="flex flex-col sm:flex-row sm:space-x-4 mb-4">
+                <input id="search-input" type="text" placeholder="Search by class, name, or student ID..." class="w-full sm:w-1/2 p-2 border border-gray-300 rounded-lg mb-2 sm:mb-0">
+                <select id="class-filter" class="w-full sm:w-1/2 p-2 border border-gray-300 rounded-lg">
+                    <option value="">เลือกชั้นเรียน</option>
+                    <option value="ม.3/2">ม.3/2</option>
+                    <option value="ม.3/9">ม.3/9</option>
+                    <option value="ม.3/11">ม.3/11</option>
+                    <option value="ม.3/14">ม.3/14</option>
+                    <option value="ม.5/1">ม.5/1</option>
+                    <option value="ม.5/5">ม.5/5</option>
+                    <option value="ม.5/10">ม.5/10</option>
+                </select>
+            </div>
             <div class="overflow-x-auto">
                 <table id="scores-table" class="w-full table-auto border-collapse">
                     <thead>
@@ -134,13 +162,11 @@
                             <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
                         </div>
                         <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
-                            <input name="final_score" type="number" placeholder="Final Score"
-                                class="w-full p-2 border rounded">
+                            <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-edit-modal"
-                            class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
+                        <button type="button" id="close-edit-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
                     </div>
                 </form>
@@ -192,13 +218,11 @@
                             <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
                         </div>
                         <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
-                            <input name="final_score" type="number" placeholder="Final Score"
-                                class="w-full p-2 border rounded">
+                            <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-add-modal"
-                            class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
+                        <button type="button" id="close-add-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
                     </div>
                 </form>
@@ -206,12 +230,10 @@
         </div>
     </div>
     <script>
-        // Replace with your Supabase Edge Function URL
         const API_URL = 'https://mihtvcbzguzkvfwnlnem.supabase.co/functions/v1/edit-score';
-        let scores = []; // Local data store
+        let scores = [];
         let donutChart, barChart;
         const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-        // Bins for donut chart
         const totalBins = [
             { label: '<50', min: -Infinity, max: 50 },
             { label: '50-54', min: 50, max: 55 },
@@ -227,58 +249,59 @@
             { label: '>=100', min: 100, max: Infinity }
         ];
         const gradeLabels = ['4', '3.5', '3', '2.5', '2', '1.5', '1', '0'];
-        // Vibrant colors for charts (Canva-inspired)
         const chartColors = [
             '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#6366F1',
             '#8B5CF6', '#EC4899', '#F43F5E', '#84CC16', '#22C55E',
             '#06B6D4', '#0EA5E9'
         ];
+
         async function fetchScores() {
-            const response = await fetch(`${API_URL}?action=read`, { method: 'GET' });
-            if (response.ok) {
-                scores = await response.json();
-                renderTable();
-                renderLatest();
-                updateCharts();
-            } else {
-                console.error('Failed to fetch scores');
+            try {
+                const response = await fetch(`${API_URL}?action=read`, { method: 'GET' });
+                if (response.ok) {
+                    scores = await response.json();
+                    renderTable();
+                    renderLatest();
+                    updateCharts();
+                } else {
+                    console.error('Failed to fetch scores:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error fetching scores:', error);
             }
         }
 
-        function renderTable(filter = '') {
+        function renderTable(filter = '', selectedClass = '') {
             const tbody = document.querySelector('#scores-table tbody');
             tbody.innerHTML = '';
             let filteredScores = scores;
 
+            if (selectedClass) {
+                filteredScores = scores.filter(score =>
+                    score.class_id?.toLowerCase() === selectedClass.toLowerCase()
+                );
+            }
+
             if (filter.trim() !== '') {
-                // Check if the filter matches any class_id exactly
-                const classMatch = scores.some(score => score.class_id?.toLowerCase() === filter.toLowerCase());
-                if (classMatch) {
-                    // If filter matches a class_id, show all rows with that class_id
-                    filteredScores = scores.filter(score =>
-                        score.class_id?.toLowerCase() === filter.toLowerCase()
-                    );
-                } else {
-                    // Otherwise, filter by first_name, last_name, or student_id
-                    filteredScores = scores.filter(score =>
-                        (score.first_name + ' ' + score.last_name).toLowerCase().includes(filter.toLowerCase()) ||
-                        score.student_id?.toLowerCase().includes(filter.toLowerCase())
-                    );
-                }
+                filteredScores = filteredScores.filter(score =>
+                    (score.class_id?.toLowerCase().includes(filter.toLowerCase()) ||
+                    (score.first_name + ' ' + score.last_name).toLowerCase().includes(filter.toLowerCase()) ||
+                    score.student_id?.toLowerCase().includes(filter.toLowerCase()))
+                );
             }
 
             filteredScores.forEach(score => {
                 const tr = document.createElement('tr');
                 tr.classList.add('border-b', 'hover:bg-gray-100', 'cursor-pointer');
                 tr.innerHTML = `
-            <td class="p-2">${score.class_id || ''}</td>
-            <td class="p-2">${score.number || ''}</td>
-            <td class="p-2">${score.first_name || ''}</td>
-            <td class="p-2">${score.last_name || ''}</td>
-            <td class="p-2">
-                <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
-            </td>
-        `;
+                    <td class="p-2">${score.class_id || ''}</td>
+                    <td class="p-2">${score.number || ''}</td>
+                    <td class="p-2">${score.first_name || ''}</td>
+                    <td class="p-2">${score.last_name || ''}</td>
+                    <td class="p-2">
+                        <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
+                    </td>
+                `;
                 tr.addEventListener('click', (e) => {
                     if (!e.target.classList.contains('delete-btn')) openEditModal(score);
                 });
@@ -290,12 +313,22 @@
             });
         }
 
+        document.querySelector('#search-input').addEventListener('input', (e) => {
+            const selectedClass = document.querySelector('#class-filter').value;
+            renderTable(e.target.value, selectedClass);
+        });
+
+        document.querySelector('#class-filter').addEventListener('change', (e) => {
+            const searchInput = document.querySelector('#search-input').value;
+            renderTable(searchInput, e.target.value);
+        });
+
         function openEditModal(score) {
             const modal = document.querySelector('#edit-modal');
             const form = document.querySelector('#edit-form');
             document.querySelector('#modal-title').textContent = 'Edit Score';
-            form.querySelector('[name="id"]').value = score.id;
-            form.querySelector('[name="user_id"]').value = score.user_id;
+            form.querySelector('[name="id"]').value = score.id || '';
+            form.querySelector('[name="user_id"]').value = score.user_id || '';
             form.querySelector('[name="class_id"]').value = score.class_id || '';
             form.querySelector('[name="number"]').value = score.number || '';
             form.querySelector('[name="student_id"]').value = score.student_id || '';
@@ -311,6 +344,7 @@
             form.querySelector('[name="final_score"]').value = score.final_score || '';
             modal.classList.remove('hidden');
         }
+
         async function saveEdit(form) {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
@@ -319,38 +353,48 @@
                 else if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
             });
             const id = data.id;
-            delete data.id; // Remove id from update data
-            const response = await fetch(`${API_URL}?action=update`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, ...data })
-            });
-            if (response.ok) {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-                fetchScores(); // Refetch to update computed fields and latest 5
-                document.querySelector('#edit-modal').classList.add('hidden');
-            } else {
-                console.error('Failed to update', await response.text());
-            }
-        }
-        async function deleteScore(id) {
-            if (confirm('Are you sure?')) {
-                const response = await fetch(`${API_URL}?action=delete`, {
+            delete data.id;
+            try {
+                const response = await fetch(`${API_URL}?action=update`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id })
+                    body: JSON.stringify({ id, ...data })
                 });
                 if (response.ok) {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
                     fetchScores();
+                    document.querySelector('#edit-modal').classList.add('hidden');
                 } else {
-                    console.error('Failed to delete');
+                    console.error('Failed to update:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error updating score:', error);
+            }
+        }
+
+        async function deleteScore(id) {
+            if (confirm('Are you sure?')) {
+                try {
+                    const response = await fetch(`${API_URL}?action=delete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id })
+                    });
+                    if (response.ok) {
+                        fetchScores();
+                    } else {
+                        console.error('Failed to delete:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error deleting score:', error);
                 }
             }
         }
+
         function renderLatest() {
             const list = document.querySelector('#latest-list');
             list.innerHTML = '';
@@ -372,8 +416,8 @@
                 list.appendChild(li);
             });
         }
+
         function updateCharts() {
-            // Donut Chart Data
             const binCounts = totalBins.map(() => 0);
             scores.forEach(score => {
                 const total = score.total || 0;
@@ -393,10 +437,10 @@
                 },
                 options: { responsive: true }
             });
-            // Bar Chart Data
+
             const gradeCounts = gradeLabels.map(() => 0);
             scores.forEach(score => {
-                const index = gradeLabels.indexOf(score.grade);
+                const index = gradeLabels.indexOf(score.grade?.toString());
                 if (index !== -1) gradeCounts[index]++;
             });
             if (barChart) barChart.destroy();
@@ -409,18 +453,16 @@
                 options: { responsive: true, scales: { y: { beginAtZero: true } } }
             });
         }
-        // Search Functionality (local filter, no refresh)
-        document.querySelector('#search-input').addEventListener('input', (e) => renderTable(e.target.value));
-        // Refresh Button
+
         document.querySelector('#refresh').addEventListener('click', fetchScores);
-        // Edit Modal
+
         const editModal = document.querySelector('#edit-modal');
         document.querySelector('#close-edit-modal').addEventListener('click', () => editModal.classList.add('hidden'));
         document.querySelector('#edit-form').addEventListener('submit', (e) => {
             e.preventDefault();
             saveEdit(e.target);
         });
-        // Add New Modal
+
         const addModal = document.querySelector('#add-modal');
         document.querySelector('#add-new').addEventListener('click', () => addModal.classList.remove('hidden'));
         document.querySelector('#close-add-modal').addEventListener('click', () => addModal.classList.add('hidden'));
@@ -432,25 +474,29 @@
                 if (data[key] === '') data[key] = null;
                 else if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
             });
-            const response = await fetch(`${API_URL}?action=create`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (response.ok) {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
+            try {
+                const response = await fetch(`${API_URL}?action=create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
                 });
-                fetchScores(); // Refetch to update latest 5 after create
-                addModal.classList.add('hidden');
-                e.target.reset();
-            } else {
-                console.error('Failed to create');
+                if (response.ok) {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    fetchScores();
+                    addModal.classList.add('hidden');
+                    e.target.reset();
+                } else {
+                    console.error('Failed to create:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error creating score:', error);
             }
         });
-        // Initial Fetch
+
         fetchScores();
     </script>
 </body>
