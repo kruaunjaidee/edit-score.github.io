@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,19 +14,27 @@
     <style>
         /* Custom vibrant colors inspired by Canva */
         :root {
-            --primary: #6366f1; /* Indigo */
-            --secondary: #ec4899; /* Pink */
-            --accent: #10b981; /* Green */
-            --background: #f3f4f6; /* Light gray */
+            --primary: #6366f1;
+            /* Indigo */
+            --secondary: #ec4899;
+            /* Pink */
+            --accent: #10b981;
+            /* Green */
+            --background: #f3f4f6;
+            /* Light gray */
             --card: #ffffff;
-            --pastel-even: #E0F7FA; /* Light cyan */
-            --pastel-odd: #F3E5F5; /* Light purple */
+            --pastel-even: #E0F7FA;
+            /* Light cyan */
+            --pastel-odd: #F3E5F5;
+            /* Light purple */
         }
+
         body {
             background-color: var(--background);
         }
     </style>
 </head>
+
 <body class="font-sans antialiased">
     <div class="container mx-auto p-6">
         <header class="text-center mb-8">
@@ -55,11 +64,14 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-semibold text-pink-600">All Scores</h2>
                 <div class="space-x-2">
-                    <button id="refresh" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">เริ่มใหม่</button>
-                    <button id="add-new" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">เพิ่ม</button>
+                    <button id="refresh"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">เริ่มใหม่</button>
+                    <button id="add-new"
+                        class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">เพิ่ม</button>
                 </div>
             </div>
-            <input id="search-input" type="text" placeholder="Search by name or student ID..." class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
+            <input id="search-input" type="text" placeholder="Search by class, name, or student ID..."
+                class="w-full mb-4 p-2 border border-gray-300 rounded-lg">
             <div class="overflow-x-auto">
                 <table id="scores-table" class="w-full table-auto border-collapse">
                     <thead>
@@ -122,11 +134,13 @@
                             <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
                         </div>
                         <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
-                            <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                            <input name="final_score" type="number" placeholder="Final Score"
+                                class="w-full p-2 border rounded">
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-edit-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
+                        <button type="button" id="close-edit-modal"
+                            class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
                     </div>
                 </form>
@@ -178,11 +192,13 @@
                             <input name="unit5" type="number" placeholder="Unit 5" class="w-full p-2 border rounded">
                         </div>
                         <div class="p-2 rounded" style="background-color: var(--pastel-odd);">
-                            <input name="final_score" type="number" placeholder="Final Score" class="w-full p-2 border rounded">
+                            <input name="final_score" type="number" placeholder="Final Score"
+                                class="w-full p-2 border rounded">
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
-                        <button type="button" id="close-add-modal" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
+                        <button type="button" id="close-add-modal"
+                            class="bg-gray-500 text-white px-4 py-2 rounded mr-2">ยกเลิก</button>
                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
                     </div>
                 </form>
@@ -228,25 +244,41 @@
                 console.error('Failed to fetch scores');
             }
         }
+
         function renderTable(filter = '') {
             const tbody = document.querySelector('#scores-table tbody');
             tbody.innerHTML = '';
-            const filteredScores = scores.filter(score =>
-                (score.first_name + ' ' + score.last_name).toLowerCase().includes(filter.toLowerCase()) ||
-                score.student_id?.toLowerCase().includes(filter.toLowerCase())
-            );
+            let filteredScores = scores;
+
+            if (filter.trim() !== '') {
+                // Check if the filter matches any class_id exactly
+                const classMatch = scores.some(score => score.class_id?.toLowerCase() === filter.toLowerCase());
+                if (classMatch) {
+                    // If filter matches a class_id, show all rows with that class_id
+                    filteredScores = scores.filter(score =>
+                        score.class_id?.toLowerCase() === filter.toLowerCase()
+                    );
+                } else {
+                    // Otherwise, filter by first_name, last_name, or student_id
+                    filteredScores = scores.filter(score =>
+                        (score.first_name + ' ' + score.last_name).toLowerCase().includes(filter.toLowerCase()) ||
+                        score.student_id?.toLowerCase().includes(filter.toLowerCase())
+                    );
+                }
+            }
+
             filteredScores.forEach(score => {
                 const tr = document.createElement('tr');
                 tr.classList.add('border-b', 'hover:bg-gray-100', 'cursor-pointer');
                 tr.innerHTML = `
-                    <td class="p-2">${score.class_id || ''}</td>
-                    <td class="p-2">${score.number || ''}</td>
-                    <td class="p-2">${score.first_name || ''}</td>
-                    <td class="p-2">${score.last_name || ''}</td>
-                    <td class="p-2">
-                        <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
-                    </td>
-                `;
+            <td class="p-2">${score.class_id || ''}</td>
+            <td class="p-2">${score.number || ''}</td>
+            <td class="p-2">${score.first_name || ''}</td>
+            <td class="p-2">${score.last_name || ''}</td>
+            <td class="p-2">
+                <button class="delete-btn text-red-500 hover:text-red-700">Delete</button>
+            </td>
+        `;
                 tr.addEventListener('click', (e) => {
                     if (!e.target.classList.contains('delete-btn')) openEditModal(score);
                 });
@@ -257,6 +289,7 @@
                 tbody.appendChild(tr);
             });
         }
+
         function openEditModal(score) {
             const modal = document.querySelector('#edit-modal');
             const form = document.querySelector('#edit-form');
@@ -421,4 +454,5 @@
         fetchScores();
     </script>
 </body>
+
 </html>
